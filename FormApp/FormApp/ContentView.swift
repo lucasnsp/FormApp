@@ -13,6 +13,7 @@ struct ContentView: View {
     @State var email: String = ""
     @State var feedback: String = ""
     @State var nota: Float = 5
+    @State var isPresentedAlert: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -62,6 +63,7 @@ struct ContentView: View {
                 Section {
                     Button {
                         print("tapped button")
+                        isPresentedAlert.toggle()
                     } label: {
                         Text("Enviar Feedback")
                             .frame(maxWidth: .infinity)
@@ -74,10 +76,37 @@ struct ContentView: View {
                 }
             }
         }
+        .navigationTitle("Feedback")
+        .navigationBarTitleDisplayMode(.large)
+        .alert("Enviar Feedback", isPresented: $isPresentedAlert) {
+            Button {
+                print("Botão enviar")
+                clearAll()
+            } label: {
+                Text("Enviar")
+            }
+        } message: {
+            Text(messageDescription)
+        }
+    }
+    
+    var messageDescription: String {
+        if feedback.isEmpty {
+            return "Nome: \(name)\nEmail: \(email)\nNota: \(Int(nota))"
+        } else {
+            return "Nome: \(name)\nEmail: \(email)\nFeedback: \(feedback)\nNota: \(Int(nota))"
+        }
     }
     
     var isDisabledButton: Bool {
         return name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
+    func clearAll() {
+        feedback = ""
+        name = ""
+        email = ""
+        nota = 5
     }
 }
 
